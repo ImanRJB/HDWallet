@@ -13,7 +13,7 @@ class HDWalletServiceProvider extends ServiceProvider
             $this->mergeConfigFrom(__DIR__ . '/../config/hd-wallet.php', 'hd-wallet');
         }
 
-        $this->app->alias(\CryptoHDWallet\Src\Services\HDWallet\HDWallet::class, 'HDWallet');
-        $this->app->register(\CryptoHDWallet\Src\Services\HDWallet\HDWalletServiceProvider::class);
+        $this->app->alias(\HDWallet\Src\Services\AddressGenerator\AddressGenerator::class, 'AddressGenerator');
+        $this->app->register(\HDWallet\Src\Services\AddressGenerator\AddressGeneratorServiceProvider::class);
     }
 }
