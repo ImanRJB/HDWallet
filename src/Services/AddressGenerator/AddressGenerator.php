@@ -1,6 +1,6 @@
 <?php
 
-namespace HDWallet\Src\Services\AddressGenerator;
+namespace HdWallet\Src\Services\AddressGenerator;
 
 use Illuminate\Support\Facades\Facade;
 

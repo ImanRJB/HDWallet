@@ -1,6 +1,6 @@
 <?php
 
-namespace HDWallet\Src\Services\PrivateKeyGenerator;
+namespace HdWallet\Src\Services\PrivateKeyGenerator;
 
 use Illuminate\Support\Facades\Facade;
 

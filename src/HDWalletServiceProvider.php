@@ -1,6 +1,6 @@
 <?php
 
-namespace HDWallet\Src;
+namespace HdWallet\Src;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -13,10 +13,10 @@ class HDWalletServiceProvider extends ServiceProvider
             $this->mergeConfigFrom(__DIR__ . '/../src/config/hd-wallet.php', 'hd-wallet');
         }
 
-        $this->app->alias(\HDWallet\Src\Services\AddressGenerator\AddressGenerator::class, 'AddressGenerator');
-        $this->app->alias(\HDWallet\Src\Services\PrivateKeyGenerator\PrivateKeyGenerator::class, 'PrivateKeyGenerator');
+        $this->app->alias(\HdWallet\Src\Services\AddressGenerator\AddressGenerator::class, 'AddressGenerator');
+        $this->app->alias(\HdWallet\Src\Services\PrivateKeyGenerator\PrivateKeyGenerator::class, 'PrivateKeyGenerator');
 
-        $this->app->register(\HDWallet\Src\Services\AddressGenerator\AddressGeneratorServiceProvider::class);
-        $this->app->register(\HDWallet\Src\Services\PrivateKeyGenerator\PrivateKeyGeneratorServiceProvider::class);
+        $this->app->register(\HdWallet\Src\Services\AddressGenerator\AddressGeneratorServiceProvider::class);
+        $this->app->register(\HdWallet\Src\Services\PrivateKeyGenerator\PrivateKeyGeneratorServiceProvider::class);
     }
 }

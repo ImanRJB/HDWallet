@@ -22,7 +22,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "HDWallet\\Src\\": "src/"
+            "HdWallet\\Src\\": "src/"
         },
         "files": [
             "src/helpers/functions.php"
@@ -31,7 +31,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "HDWallet\\Src\\HDWalletServiceProvider"
+                "HdWallet\\Src\\HDWalletServiceProvider"
             ]
         }
     }
