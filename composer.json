@@ -33,6 +33,7 @@
             "providers": [
                 "HdWallet\\Src\\HDWalletServiceProvider"
             ]
-        }
+        },
+        "use_ignore_platform_reqs": "yes"
     }
 }
