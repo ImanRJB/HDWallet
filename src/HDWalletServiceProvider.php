@@ -14,6 +14,9 @@ class HDWalletServiceProvider extends ServiceProvider
         }
 
         $this->app->alias(\HDWallet\Src\Services\AddressGenerator\AddressGenerator::class, 'AddressGenerator');
+        $this->app->alias(\HDWallet\Src\Services\PrivateKeyGenerator\PrivateKeyGenerator::class, 'PrivateKeyGenerator');
+
         $this->app->register(\HDWallet\Src\Services\AddressGenerator\AddressGeneratorServiceProvider::class);
+        $this->app->register(\HDWallet\Src\Services\PrivateKeyGenerator\PrivateKeyGeneratorServiceProvider::class);
     }
 }

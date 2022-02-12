@@ -29,9 +29,18 @@ class AddressGeneratorService
     private $pubPrefix;
     private $config;
     private $serializer;
+    private $child_key;
+    private $public_key;
+    private $public_key_ec;
+    private $public_key_hash;
 
-    public function __construct()
+    public function getNewAddress($type, $path)
     {
+        if (!in_array($type, get_class_methods($this))) {
+            return response(['message' => 'Type not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $xpub = config('hd-wallet.' . $type . '-xpub');
         $this->network = NetworkFactory::bitcoin();
         $this->adapter = Bitcoin::getEcAdapter();
         $this->slip132 = new Slip132(new KeyToScriptHelper($this->adapter));
@@ -45,67 +54,36 @@ class AddressGeneratorService
         $this->serializer = new Base58ExtendedKeySerializer(
             new ExtendedKeySerializer($this->adapter, $this->config)
         );
-    }
-
-    public function getNewAddress($type, $path)
-    {
-        if (!in_array($type, get_class_methods($this))) {
-            return response(['message' => 'Type not found'], Response::HTTP_NOT_FOUND);
-        }
-        return $this->$type($path);
-    }
-
-    private function btc($path)
-    {
-        $xpub = config('hd-wallet.btc-xpub');
         $key = $this->serializer->parse($this->network, $xpub);
-        $child_key = $key->derivePath($path);
-        $wallet_address = $child_key->getAddress(new AddressCreator())->getAddress();
-
-        return response([
-            'address' => $wallet_address,
-        ], Response::HTTP_OK);
-    }
-
-    private function erc($path)
-    {
-        $xpub = config('hd-wallet.erc-xpub');
-        $key = $this->serializer->parse($this->network, $xpub);
-        $child_key = $key->derivePath($path);
-        $public_key = $child_key->getPublicKey()->getHex();
+        $this->child_key = $key->derivePath($path);
+        $this->public_key = $this->child_key->getPublicKey()->getHex();
 
         $ec = new EC('secp256k1');
-        $public_key = $ec->keyFromPublic($public_key, 'hex');
-        $public_key = json_decode(json_encode($public_key), true);
-        $public_key = $public_key['pub'][0] . $public_key['pub'][1];
+        $this->public_key_ec = $ec->keyFromPublic($this->public_key, 'hex');
+        $this->public_key_ec = json_decode(json_encode($this->public_key_ec), true);
+        $this->public_key_ec = $this->public_key_ec['pub'][0] . $this->public_key_ec['pub'][1];
 
-        $hash = hex2bin($public_key);
-        $hash = Keccak::hash($hash, 256);
-        $wallet_address = '0x' . substr($hash, -40);
+        $this->public_key_hash = hex2bin($this->public_key_ec);
+        $this->public_key_hash = Keccak::hash($this->public_key_hash, 256);
 
         return response([
-            'address' => $wallet_address,
+            'address' => $this->$type(),
+            'path' => $path,
         ], Response::HTTP_OK);
     }
 
-    private function trc($path)
+    private function btc()
     {
-        $xpub = config('hd-wallet.trc-xpub');
-        $key = $this->serializer->parse($this->network, $xpub);
-        $child_key = $key->derivePath($path);
-        $public_key = $child_key->getPublicKey()->getHex();
+        return $this->child_key->getAddress(new AddressCreator())->getAddress();
+    }
 
-        $ec = new EC('secp256k1');
-        $public_key = $ec->keyFromPublic($public_key, 'hex');
-        $public_key = json_decode(json_encode($public_key), true);
-        $public_key = $public_key['pub'][0] . $public_key['pub'][1];
+    private function erc()
+    {
+        return '0x' . substr($this->public_key_hash, -40);
+    }
 
-        $hash = hex2bin($public_key);
-        $hash = Keccak::hash($hash, 256);
-        $wallet_address = $this->hexToAddress('41' . substr($hash, -40));
-
-        return response([
-            'address' => $wallet_address,
-        ], Response::HTTP_OK);
+    private function trc()
+    {
+        return hexToAddress('41' . substr($this->public_key_hash, -40));
     }
 }
