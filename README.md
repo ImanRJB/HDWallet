@@ -17,7 +17,7 @@ TRC_XPRV=
 ### Generate address using network and HD path
 
 ```php
-return AddressGenerator::getAddressWithPrivateKey('btc', '0/0');
+return AddressGenerator::getNewAddress('btc', '0/0');
 ```
 
 ### Generate private key and address using network and HD path
@@ -31,5 +31,5 @@ return PrivateKeyGenerator::getAddressWithPrivateKey('btc', '0/0');
 Network | Symbol
 ---------------------|--------
 Bitcoin              |btc
-Ethereum             |eth
+Ethereum             |erc
 Tron                 |trc
