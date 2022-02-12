@@ -28,12 +28,14 @@
             "src/helpers/functions.php"
         ]
     },
+    "config": {
+        "platform-check": false
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "HdWallet\\Src\\HDWalletServiceProvider"
             ]
-        },
-        "use_ignore_platform_reqs": "yes"
+        }
     }
 }
