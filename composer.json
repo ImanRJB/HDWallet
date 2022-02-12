@@ -34,5 +34,8 @@
                 "HDWallet\\Src\\HDWalletServiceProvider"
             ]
         }
+    },
+    "config": {
+        "platform-check": false
     }
 }
