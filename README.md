@@ -1,5 +1,11 @@
 # Cryptocurrency HD Wallet for multiple networks
 
+### How to install
+
+```bash
+composer require imanrj/hd-wallet
+```
+
 ### Put below parameters in <code>.env</code> file
 ##### (XPRV is only used in private key generation)
 
