@@ -16,10 +16,37 @@ use BitWasp\Bitcoin\Network\NetworkFactory;
 use BitWasp\Bitcoin\Network\Slip132\BitcoinRegistry;
 use BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\Base58ExtendedKeySerializer;
 use BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\ExtendedKeySerializer;
+use Elliptic\EC;
+use kornrunner\Keccak;
 use Symfony\Component\HttpFoundation\Response;
 
 class AddressGeneratorService
 {
+    private $network;
+    private $adapter;
+    private $slip132;
+    private $bitcoin_prefixes;
+    private $pubPrefix;
+    private $config;
+    private $serializer;
+
+    public function __construct()
+    {
+        $this->network = NetworkFactory::bitcoin();
+        $this->adapter = Bitcoin::getEcAdapter();
+        $this->slip132 = new Slip132(new KeyToScriptHelper($this->adapter));
+        $this->bitcoin_prefixes = new BitcoinRegistry();
+        $this->pubPrefix = $this->slip132->p2pkh($this->bitcoin_prefixes);
+        $this->config = new GlobalPrefixConfig([
+            new NetworkConfig($this->network, [
+                $this->pubPrefix,
+            ])
+        ]);
+        $this->serializer = new Base58ExtendedKeySerializer(
+            new ExtendedKeySerializer($this->adapter, $this->config)
+        );
+    }
+
     public function getNewAddress($type, $path)
     {
         if (!in_array($type, get_class_methods($this))) {
@@ -31,28 +58,8 @@ class AddressGeneratorService
     private function btc($path)
     {
         $xpub = config('hd-wallet.btc-xpub');
-
-        $network = NetworkFactory::bitcoin();
-
-        $adapter = Bitcoin::getEcAdapter();
-        $slip132 = new Slip132(new KeyToScriptHelper($adapter));
-        $bitcoin_prefixes = new BitcoinRegistry();
-
-        $pubPrefix = $slip132->p2pkh($bitcoin_prefixes);
-
-        $config = new GlobalPrefixConfig([
-            new NetworkConfig($network, [
-                $pubPrefix,
-            ])
-        ]);
-
-        $serializer = new Base58ExtendedKeySerializer(
-            new ExtendedKeySerializer($adapter, $config)
-        );
-
-        $key = $serializer->parse($network, $xpub);
+        $key = $this->serializer->parse($this->network, $xpub);
         $child_key = $key->derivePath($path);
-
         $wallet_address = $child_key->getAddress(new AddressCreator())->getAddress();
 
         return response([
@@ -60,13 +67,45 @@ class AddressGeneratorService
         ], Response::HTTP_OK);
     }
 
-    private function erc20($path)
+    private function erc($path)
     {
-        return response(EthereumHD::getAddressWithHdPath($path), Response::HTTP_OK);
+        $xpub = config('hd-wallet.erc-xpub');
+        $key = $this->serializer->parse($this->network, $xpub);
+        $child_key = $key->derivePath($path);
+        $public_key = $child_key->getPublicKey()->getHex();
+
+        $ec = new EC('secp256k1');
+        $public_key = $ec->keyFromPublic($public_key, 'hex');
+        $public_key = json_decode(json_encode($public_key), true);
+        $public_key = $public_key['pub'][0] . $public_key['pub'][1];
+
+        $hash = hex2bin($public_key);
+        $hash = Keccak::hash($hash, 256);
+        $wallet_address = '0x' . substr($hash, -40);
+
+        return response([
+            'address' => $wallet_address,
+        ], Response::HTTP_OK);
     }
 
-    private function trc20($path)
+    private function trc($path)
     {
-        return response(TronHD::getAddressWithHdPath($path), Response::HTTP_OK);
+        $xpub = config('hd-wallet.trc-xpub');
+        $key = $this->serializer->parse($this->network, $xpub);
+        $child_key = $key->derivePath($path);
+        $public_key = $child_key->getPublicKey()->getHex();
+
+        $ec = new EC('secp256k1');
+        $public_key = $ec->keyFromPublic($public_key, 'hex');
+        $public_key = json_decode(json_encode($public_key), true);
+        $public_key = $public_key['pub'][0] . $public_key['pub'][1];
+
+        $hash = hex2bin($public_key);
+        $hash = Keccak::hash($hash, 256);
+        $wallet_address = $this->hexToAddress('41' . substr($hash, -40));
+
+        return response([
+            'address' => $wallet_address,
+        ], Response::HTTP_OK);
     }
 }

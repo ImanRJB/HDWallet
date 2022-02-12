@@ -23,7 +23,10 @@
     "autoload": {
         "psr-4": {
             "HDWallet\\Src\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers/functions.php"
+        ]
     },
     "extra": {
         "laravel": {
