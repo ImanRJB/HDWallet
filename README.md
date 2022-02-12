@@ -25,3 +25,11 @@ return AddressGenerator::getAddressWithPrivateKey('btc', '0/0');
 ```php
 return PrivateKeyGenerator::getAddressWithPrivateKey('btc', '0/0');
 ```
+
+#### Supported networks:
+
+Network | Symbol
+---------------------|--------
+Bitcoin              |btc
+Ethereum             |eth
+Tron                 |trc
