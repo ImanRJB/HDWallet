@@ -1,0 +1,38 @@
+{
+    "name": "imanrj/hd-wallet",
+    "description": "HD wallet for multiple cryptocurrencies",
+    "keywords": [],
+    "license": "MIT",
+    "type": "library",
+    "require": {
+        "bitwasp/bitcoin": "^1.0",
+        "kornrunner/keccak": "^1.1",
+        "simplito/elliptic-php": "^1.0",
+        "sop/asn1": "^4.1",
+        "sop/crypto-types": "^0.3.0",
+        "php-64bit": "*",
+        "ext-openssl": "*",
+        "ext-bcmath": "*"
+    },
+    "authors": [
+        {
+            "name": "Iman Rajabi",
+            "email": "iman.rjb@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "HDWallet\\Src\\": "src/"
+        },
+        "files": [
+            "src/helpers/functions.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HDWallet\\Src\\HDWalletServiceProvider"
+            ]
+        }
+    }
+}
