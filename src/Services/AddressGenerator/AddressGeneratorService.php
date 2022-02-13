@@ -66,10 +66,10 @@ class AddressGeneratorService
         $this->public_key_hash = hex2bin($this->public_key_ec);
         $this->public_key_hash = Keccak::hash($this->public_key_hash, 256);
 
-        return response([
+        return [
             'address' => $this->$type(),
             'path' => $path,
-        ], Response::HTTP_OK);
+        ];
     }
 
     private function btc()

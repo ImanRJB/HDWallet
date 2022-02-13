@@ -71,11 +71,11 @@ class PrivateKeyGeneratorService
         $this->public_key_hash = Keccak::hash($this->public_key_hash, 256);
 
         $address_detail = $this->$type();
-        return response([
+        return [
             'address' => $address_detail['address'],
             'private_key' => $address_detail['private_key'],
             'path' => $path,
-        ], Response::HTTP_OK);
+        ];
     }
 
     private function btc()
