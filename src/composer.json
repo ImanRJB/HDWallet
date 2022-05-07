@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "library",
     "require": {
-        "bitwasp/bitcoin": "^1.0",
+        "bitwasp/bitcoin": "*",
         "kornrunner/keccak": "^1.1",
         "simplito/elliptic-php": "^1.0",
         "sop/asn1": "^4.1",
@@ -14,6 +14,20 @@
         "ext-openssl": "*",
         "ext-bcmath": "*"
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "version": "dev-master",
+                "name": "bitwasp/bitcoin",
+                "source": {
+                    "url": "https://github.com/ImanRJB/bitcoin-php.git",
+                    "type": "git",
+                    "reference": "master"
+                }
+            }
+        }
+    ],
     "authors": [
         {
             "name": "Iman Rajabi",
