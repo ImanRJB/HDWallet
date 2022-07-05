@@ -3,7 +3,7 @@
 ### How to install
 
 ```bash
-composer require imanrj/hd-wallet
+composer require imanrjb/hd-wallet
 ```
 
 ### Put below parameters in <code>.env</code> file

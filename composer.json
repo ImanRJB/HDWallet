@@ -1,5 +1,5 @@
 {
-    "name": "imanrj/hd-wallet",
+    "name": "imanrjb/hd-wallet",
     "description": "HD wallet for multiple cryptocurrencies",
     "keywords": [],
     "license": "MIT",
@@ -16,7 +16,7 @@
     },
     "authors": [
         {
-            "name": "Iman Rajabi",
+            "name": "Iman RJB",
             "email": "iman.rjb@gmail.com"
         }
     ],
